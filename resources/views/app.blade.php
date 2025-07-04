@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/js/app.js')
     @inertiaHead()
-
+    
 </head>
 
 <body class="bg-gray-100">
