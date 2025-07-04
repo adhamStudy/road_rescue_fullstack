@@ -1,5 +1,4 @@
-@tailwind base;
-@tailwind components;
+
 @tailwind utilities;
 @import "tailwindcss";
 @source "../views";
@@ -10,4 +9,64 @@
 /* Set the global font */
 body {
   font-family: 'Ubuntu', sans-serif;
+}
+@import "tailwindcss";
+
+/* Desktop Navigation Styles */
+.nav-link {
+  @apply relative text-gray-800 font-medium transition-all duration-300 ease-in-out cursor-pointer block py-2 px-4 rounded-lg;
+}
+
+.nav-link:hover {
+  @apply text-blue-600 bg-white/50 backdrop-blur-sm shadow-md transform -translate-y-1;
+}
+
+.nav-underline {
+  @apply absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300 ease-out;
+  transform: translateX(-50%);
+}
+
+.group:hover .nav-underline {
+  @apply w-full;
+}
+
+/* Hamburger Menu Styles */
+.hamburger-line {
+  @apply w-6 h-0.5 bg-gray-800 transition-all duration-300 ease-in-out;
+}
+
+/* Mobile Navigation Styles */
+.mobile-nav-item {
+  @apply transform transition-all duration-200 hover:translate-x-2;
+}
+
+.mobile-nav-link {
+  @apply flex items-center space-x-3 text-lg font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 p-3 rounded-lg transition-all duration-200;
+}
+
+.mobile-nav-link:hover {
+  @apply shadow-md;
+}
+
+/* Stagger animation for mobile menu items */
+.mobile-nav-item:nth-child(1) { animation-delay: 0.1s; }
+.mobile-nav-item:nth-child(2) { animation-delay: 0.2s; }
+.mobile-nav-item:nth-child(3) { animation-delay: 0.3s; }
+.mobile-nav-item:nth-child(4) { animation-delay: 0.4s; }
+.mobile-nav-item:nth-child(5) { animation-delay: 0.5s; }
+
+/* Slide-in animation for mobile menu items */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.mobile-nav-item {
+  animation: slideInRight 0.3s ease-out forwards;
 }
