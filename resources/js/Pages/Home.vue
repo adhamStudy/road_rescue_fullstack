@@ -2,6 +2,7 @@
   <div>
     <Header/>
      <Hero/>
+     <Services/>
   </div>
 
   <!-- Hero Section -->
@@ -12,5 +13,6 @@
 
 import Header from '../Components/Header.vue';
 import Hero from '../Components/Hero.vue';
+import Services from '../Components/ServicesComponents/Services.vue';
 
 </script>

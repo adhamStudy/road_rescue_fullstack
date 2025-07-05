@@ -61,12 +61,12 @@ const requestHelp = () => {
 <style scoped>
 /* Custom shadow for enhanced glass effect */
 .shadow-3xl {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
 }
 
 /* Enhanced backdrop blur for older browsers */
 .backdrop-blur-xl {
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
 
