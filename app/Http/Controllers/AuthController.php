@@ -12,7 +12,10 @@ class AuthController extends Controller
     public function create()
     {
 
-        return Inertia::render('Auth/Login');
+        if (!Auth::user()) {
+            return Inertia::render('Auth/Login');
+        }
+        return redirect()->intended('/');
     }
 
     public function store(Request $request)
@@ -22,7 +25,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        if (!Auth::attempt($credentials)) {
+        if (!Auth::attempt($credentials, true)) {
             throw ValidationException::withMessages([
                 'email' => 'Unauthorized Access'
             ]);
@@ -33,5 +36,13 @@ class AuthController extends Controller
         return redirect()->intended('/');
     }
 
-    public function destroy() {}
+    public function destroy(Request $request)
+    {
+
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->intended('/');
+    }
 }

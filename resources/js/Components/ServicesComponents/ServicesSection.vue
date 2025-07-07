@@ -23,7 +23,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import ServiceCard from './ServiceCard.vue'
 
-const showAll = ref(false)
+const showAll = ref(true)
 const isDesktop = ref(false)
 
 const handleResize = () => {

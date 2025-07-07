@@ -32,11 +32,50 @@
             <span class="nav-underline"></span>
           </a>
         </li>
-        <li class="nav-item group">
+        <li v-if="!user" class="nav-item group">
           <a href="/login" class="nav-link">
             Sign in 
             <span class="nav-underline"></span>
           </a>
+        </li>
+        <li v-else class="nav-item group relative">
+          <div class="flex items-center space-x-2 mt-2">
+            <h2 class="text-gray-800">
+              {{user.name}}
+            </h2>
+            <button 
+              @click="toggleLogoutDialog"
+              class="p-1 rounded-full hover:bg-gray-200 transition-all duration-200 hover:scale-110"
+            >
+              <svg class="w-5 h-5 text-gray-600 hover:text-red-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+              </svg>
+            </button>
+          </div>
+          
+          <!-- Logout Dialog -->
+          <div 
+            v-if="isLogoutDialogOpen"
+            class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 z-50 animate-fade-in"
+          >
+            <div class="p-4">
+              <p class="text-sm text-gray-600 mb-3">Are you sure you want to sign out?</p>
+              <div class="flex space-x-2">
+                <button 
+                  @click="handleSignOut"
+                  class="flex-1 bg-red-500 text-white text-sm font-medium py-2 px-3 rounded hover:bg-red-600 transition-colors duration-200"
+                >
+                  Sign Out
+                </button>
+                <button 
+                  @click="closeLogoutDialog"
+                  class="flex-1 bg-gray-300 text-gray-700 text-sm font-medium py-2 px-3 rounded hover:bg-gray-400 transition-colors duration-200"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
         </li>
       </ul>
     </div>
@@ -132,6 +171,38 @@
               Contact
             </a>
           </li>
+          <li class="mobile-nav-item">
+            <a v-if="!user"
+              href="/login" 
+              @click="closeMobileMenu"
+              class="mobile-nav-link"
+            >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              Sign in
+            </a>
+
+            <div v-else class="space-y-3">
+              <div class="flex items-center space-x-3 text-lg font-medium text-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <span>{{user.name}}</span>
+              </div>
+              
+              <!-- Mobile Logout Button -->
+              <button 
+                @click="handleSignOut"
+                class="w-full flex items-center space-x-3 text-red-600 hover:text-red-700 hover:bg-red-50 p-3 rounded-lg transition-all duration-200 text-lg font-medium"
+              >
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </li>
         </ul>
 
         <!-- Mobile CTA Button -->
@@ -145,13 +216,24 @@
         </div>
       </nav>
     </div>
+
+    <!-- Logout Dialog Overlay (for desktop) -->
+    <div 
+      v-if="isLogoutDialogOpen"
+      @click="closeLogoutDialog"
+      class="fixed inset-0 z-40 hidden md:block"
+    ></div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { Link } from '@inertiajs/vue3'
+import { Link, usePage, router } from '@inertiajs/vue3'
+
 const isMobileMenuOpen = ref(false)
+const isLogoutDialogOpen = ref(false)
+
+const user = usePage().props.auth.user
 
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
@@ -161,14 +243,36 @@ const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
 }
 
-// Close menu when clicking outside or pressing Escape
-const handleClickOutside = (event) => {
-  // This is handled by the overlay click, but we can add additional logic here if needed
+const toggleLogoutDialog = () => {
+  isLogoutDialogOpen.value = !isLogoutDialogOpen.value
 }
 
+const closeLogoutDialog = () => {
+  isLogoutDialogOpen.value = false
+}
+
+const handleSignOut = () => {
+  // Close any open dialogs/menus
+  closeLogoutDialog()
+  closeMobileMenu()
+  
+  // Inertia logout with DELETE method
+  router.delete('/logout', {
+    onSuccess: () => {
+      window.location.href = '/' // Force full page reload after logout
+    },
+    onError: (errors) => {
+      console.error('Logout failed:', errors)
+    }
+  })
+}
+
+
+// Close menu when clicking outside or pressing Escape
 const handleKeydown = (event) => {
   if (event.key === 'Escape') {
     closeMobileMenu()
+    closeLogoutDialog()
   }
 }
 
@@ -182,3 +286,20 @@ onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
 })
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
