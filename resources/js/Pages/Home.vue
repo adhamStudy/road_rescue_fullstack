@@ -1,18 +1,17 @@
 <template>
   <div>
-    <Header/>
-     <Hero/>
-     <Services/>
-  </div>
 
-  <!-- Hero Section -->
+     <HomeLayout>
+      <Hero/>
+     </HomeLayout>
+     
+  </div>
 
 </template>
 
 <script setup>
 
-import Header from '../Components/Header.vue';
+import HomeLayout from '../Layouts/HomeLayout.vue';
 import Hero from '../Components/Hero.vue';
-import Services from '../Components/ServicesComponents/Services.vue';
 
 </script>

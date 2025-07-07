@@ -33,8 +33,8 @@
           </a>
         </li>
         <li class="nav-item group">
-          <a href="/contact" class="nav-link">
-            Contact
+          <a href="/login" class="nav-link">
+            Sign in 
             <span class="nav-underline"></span>
           </a>
         </li>
@@ -150,7 +150,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-
+import { Link } from '@inertiajs/vue3'
 const isMobileMenuOpen = ref(false)
 
 const toggleMobileMenu = () => {

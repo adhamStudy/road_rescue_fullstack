@@ -1,29 +1,7 @@
 <template>
   <div>
     <!-- Header with toggle icon (shown only on mobile and md) -->
-    <div class="w-full bg-blue-700 flex justify-between items-center px-6 py-8">
-      <h1 class="text-2xl text-white">Our Services</h1>
-
-      <!-- Icon only for mobile/md screens -->
-      <button
-        @click="showAll = !showAll"
-        class="text-white lg:hidden transition-transform duration-300"
-        aria-label="Toggle services"
-      >
-        <svg
-          :class="[
-            'w-6 h-6 transform transition-transform duration-300',
-            showAll ? 'rotate-180' : 'rotate-0'
-          ]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-    </div>
+    
 
     <!-- Services section -->
     <Transition name="fade-slide">
