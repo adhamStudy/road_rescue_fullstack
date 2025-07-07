@@ -6,7 +6,7 @@
     <!-- Main content injected here -->
     <slot></slot>
 
-    <Footer />
+
   </div>
 </template>
 

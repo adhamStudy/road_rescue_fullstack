@@ -20,7 +20,7 @@
               </div>
 
               <!-- Login Form -->
-              <form class="space-y-6">
+              <form @submit.prevent="login" class="space-y-6">
                 
                 <!-- Email Field -->
                 <div>
@@ -28,13 +28,18 @@
                     Email Address
                   </label>
                   <input 
-                    type="email" 
+                    type="text" 
                     id="email" 
+                          v-model="form.email"
+
                     name="email" 
                     required
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 outline-none"
                     placeholder="Enter your email"
                   />
+                  <div v-if="form.errors.email" class="text-red-500 font-bold">
+                    {{ form.errors.email }}
+                  </div>
                 </div>
 
                 <!-- Password Field -->
@@ -45,11 +50,16 @@
                   <input 
                     type="password" 
                     id="password" 
+                       v-model="form.password"
                     name="password" 
                     required
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 outline-none"
                     placeholder="Enter your password"
                   />
+                  <div v-if="form.errors.password" class="text-red-500 font-bold">
+                    {{ form.errors.password }}
+                  </div>
+
                 </div>
 
                 <!-- Remember Me & Forgot Password -->
@@ -159,7 +169,26 @@
 </template>
 
 <script setup>
+import { useForm } from '@inertiajs/vue3'
 import HomeLayout from '../../Layouts/HomeLayout.vue'
+
+
+const form = useForm({
+  email:null,
+  password:null
+})
+
+const login = () => form.post('/login');
+
+
+
+
+
+
+
+
+
+
 
 // Handle image loading errors
 const handleImageError = (event) => {
