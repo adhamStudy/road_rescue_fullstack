@@ -38,6 +38,12 @@
             <span class="nav-underline"></span>
           </a>
         </li>
+        <li v-if="!user" class="nav-item group">
+          <a href="/register" class="nav-link">
+            Register
+            <span class="nav-underline"></span>
+          </a>
+        </li>
         <li v-else class="nav-item group relative">
           <div class="flex items-center space-x-2 mt-2">
             <h2 class="text-gray-800">

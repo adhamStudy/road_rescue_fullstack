@@ -19,22 +19,26 @@
                 </p>
               </div>
 
-              <!-- Login Form -->
-              <form class="space-y-6">
+              <!-- Signup Form -->
+              <form @submit.prevent="register" class="space-y-6">
                 <!-- Name Field -->
                 <div>
-                  <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                  <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                     Name
                   </label>
                   <input 
                     type="name" 
                     id="name" 
                     name="name" 
+                   v-model="form.name"
                     required
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 outline-none"
                     placeholder="Enter your name"
                   />
                 </div>
+                <div v-if="form.errors.name" class="text-red-500 font-bold">
+                    {{ form.errors.name }}
+                  </div>
                 <!-- Email Field -->
                 <div>
                   <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
@@ -44,11 +48,15 @@
                     type="email" 
                     id="email" 
                     name="email" 
+                     v-model="form.email"
                     required
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 outline-none"
                     placeholder="Enter your email"
                   />
                 </div>
+                <div v-if="form.errors.email" class="text-red-500 font-bold">
+                    {{ form.errors.email }}
+                  </div>
 
                 <!-- Password Field -->
                 <div>
@@ -59,11 +67,15 @@
                     type="password" 
                     id="password" 
                     name="password" 
+                     v-model="form.password"
                     required
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 outline-none"
                     placeholder="Enter your password"
                   />
                 </div>
+                <div v-if="form.errors.password" class="text-red-500 font-bold">
+                    {{ form.errors.password }}
+                  </div>
 
                 <!-- Password Confirmation -->
                 <div>
@@ -74,11 +86,15 @@
                     type="password" 
                     id="password confirm" 
                     name="password_confirmation" 
+                     v-model="form.password_confirmation"
                     required
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 outline-none"
                     placeholder="Enter your password"
                   />
                 </div>
+                <div v-if="form.errors.password_confirmation" class="text-red-500 font-bold">
+                    {{ form.errors.password_confirmation }}
+                  </div>
 
                 <!-- Remember Me & Forgot Password -->
                 <div class="flex items-center justify-between">
@@ -187,6 +203,21 @@
 </template>
 
 <script setup>
+
+
+import { useForm, usePage } from '@inertiajs/vue3'
+
+
+const form = useForm({
+  name:null,
+  email:null,
+  password:null,
+  password_confirmation:null
+})
+
+const register = () => form.post('/register');
+
+
 import HomeLayout from '../../Layouts/HomeLayout.vue'
 
 // Handle image loading errors

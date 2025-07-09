@@ -25,7 +25,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        if (!Auth::attempt($credentials, true)) {
+        if (!Auth::attempt($credentials)) {
             throw ValidationException::withMessages([
                 'email' => 'Unauthorized Access'
             ]);
