@@ -160,9 +160,9 @@
                 <!-- Sign Up Link -->
                 <p class="text-center text-sm text-gray-600 mt-6">
                   Already have an account?
-                  <a href="/login" class="text-indigo-600 hover:text-indigo-500 font-medium transition-colors duration-200">
+                  <Link href="/login" class="text-indigo-600 hover:text-indigo-500 font-medium transition-colors duration-200">
                     Sign in 
-                  </a>
+                  </Link>
                 </p>
 
               </form>
@@ -205,7 +205,7 @@
 <script setup>
 
 
-import { useForm, usePage } from '@inertiajs/vue3'
+import { router, useForm, Link, usePage } from '@inertiajs/vue3'
 
 
 const form = useForm({

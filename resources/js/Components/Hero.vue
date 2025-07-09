@@ -51,10 +51,14 @@
 </template>
 
 <script setup>
+import { router } from '@inertiajs/vue3';
+
 const requestHelp = () => {
   // Handle the request help action
-  console.log('Request help clicked');
+  router.visit('/request-service'); // Performs a GET request to the URL
   // You can add your logic here, like opening a modal or navigating to a contact form
+
+
 }
 </script>
 

@@ -126,9 +126,9 @@
                 <!-- Sign Up Link -->
                 <p class="text-center text-sm text-gray-600 mt-6">
                   Don't have an account?
-                  <a href="/register" class="text-indigo-600 hover:text-indigo-500 font-medium transition-colors duration-200">
+                  <Link href="/register" class="text-indigo-600 hover:text-indigo-500 font-medium transition-colors duration-200">
                     Sign up here
-                  </a>
+                  </Link>
                 </p>
 
               </form>
@@ -169,7 +169,7 @@
 </template>
 
 <script setup>
-import { useForm } from '@inertiajs/vue3'
+import { useForm ,Link } from '@inertiajs/vue3'
 import HomeLayout from '../../Layouts/HomeLayout.vue'
 
 

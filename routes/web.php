@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RequestServiceController;
 use App\Http\Controllers\UserAccountController;
+use App\Models\Service;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -11,10 +13,11 @@ Route::get('/', function () {
 
 Route::get('/services', function () {
 
-    return Inertia::render('Services');
-})->middleware(
-    'auth'
-);
+    $services = Service::all();
+    // dd($services);
+
+    return Inertia::render('Services', ['services' => $services]);
+});
 
 
 
@@ -28,3 +31,9 @@ Route::get(
     [UserAccountController::class, 'create']
 )->name('register');
 Route::post('/register', [UserAccountController::class, 'store']);
+
+
+
+// Request Service Controller 
+
+Route::get('/request-service', [RequestServiceController::class, 'create'])->middleware('auth');

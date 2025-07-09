@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Header with toggle icon (shown only on mobile and md) -->
+   
     
 
     <!-- Services section -->
@@ -10,8 +10,8 @@
         class="flex items-center justify-center px-4"
       >
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 w-full max-w-7xl py-6">
-          <div v-for="n in 7" :key="n" class="mx-2">
-            <ServiceCard />
+          <div v-for="service in services" :key="service.id" class="mx-2">
+            <ServiceCard :service="service" />
           </div>
         </div>
       </div>
@@ -22,7 +22,12 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import ServiceCard from './ServiceCard.vue'
-
+defineProps({
+  services: {
+    type: Array,
+    required: true
+  }
+});
 const showAll = ref(true)
 const isDesktop = ref(false)
 
