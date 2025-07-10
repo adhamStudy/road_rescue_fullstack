@@ -7,7 +7,7 @@
     
     <!-- Desktop Navigation Menu -->
     <div class="hidden md:block">
-      <ul class="flex space-x-8 mr-10 text-2xl">
+      <ul class="flex space-x-8 mr-10 text-xl">
         <li class="nav-item group">
           <a href="/" class="nav-link">
             Home
@@ -21,8 +21,8 @@
           </a>
         </li>
         <li class="nav-item group">
-          <a href="/how-it-works" class="nav-link">
-            How It Works
+          <a href="/how-it-works" class="nav-link ">
+            Guides
             <span class="nav-underline"></span>
           </a>
         </li>

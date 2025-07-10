@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RequestServiceController;
+use App\Http\Controllers\SMSController;
 use App\Http\Controllers\UserAccountController;
 use App\Models\Service;
 use Illuminate\Support\Facades\Route;
@@ -37,3 +38,4 @@ Route::post('/register', [UserAccountController::class, 'store']);
 // Request Service Controller 
 
 Route::get('/request-service', [RequestServiceController::class, 'create'])->middleware('auth');
+Route::post('/request-service', [RequestServiceController::class, 'store'])->middleware('auth');
