@@ -14,7 +14,7 @@ class RequestServiceController extends Controller
     public function create()
     {
         $services = Service::all();
-        return Inertia::render('RequestService', ['services' => $services]);
+        return Inertia::render('RequestService/RequestService', ['services' => $services]);
     }
 
     public function store(Request $request)
@@ -30,7 +30,7 @@ class RequestServiceController extends Controller
         ]);
 
         // Create the request
-        ServiceRequest::create([
+        $serviceRequest = ServiceRequest::create([
             'user_id' => Auth::id(),
             'service_id' => $validated['service_id'],
             'vehicle_type' => $validated['vehicle_type'],
@@ -40,12 +40,43 @@ class RequestServiceController extends Controller
             'lng' => $validated['lng'],
             'status' => 'pending',
         ]);
-        $lat = $validated['lat'];
-        $lng = $validated['lng'];
 
-        // Debug: Check if flash is being set
-        Log::info('Setting flash message');
+        // Debug: Check if record is created
+        Log::info('Service request created with ID: ' . $serviceRequest->id);
 
-        return redirect()->back()->with('success', "We received your request at this dimensions ($lat,$lng)\nwe will send a Technician soon .. please be patient");
+        // Redirect to acknowledgment page with request ID
+        return redirect()->route('service-requests.acknowledgment', $serviceRequest->id);
+    }
+
+    // Step 2: Add a new method to show the acknowledgment page
+    public function acknowledgment($id)
+    {
+        $serviceRequest = ServiceRequest::with('service')->findOrFail($id);
+
+        // Make sure the user can only view their own requests
+        if ($serviceRequest->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return Inertia::render('RequestService/Acknowledgment', [
+            'serviceRequest' => $serviceRequest
+        ]);
+    }
+    public function checkStatus($id)
+    {
+        $serviceRequest = ServiceRequest::findOrFail($id);
+
+        // Make sure the user can only view their own requests
+        if ($serviceRequest->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Load the service relationship
+        $serviceRequest->load('service');
+
+        // Return the updated service request data with the same acknowledgment page
+        return Inertia::render('RequestService/Acknowledgment', [
+            'serviceRequest' => $serviceRequest
+        ]);
     }
 }

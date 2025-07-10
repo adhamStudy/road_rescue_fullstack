@@ -93,7 +93,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { router } from '@inertiajs/vue3';
-import HomeLayout from '../Layouts/HomeLayout.vue';
+import HomeLayout from '../../Layouts/HomeLayout.vue';
 
 // Form data
 const form = ref({

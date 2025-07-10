@@ -39,3 +39,17 @@ Route::post('/register', [UserAccountController::class, 'store']);
 
 Route::get('/request-service', [RequestServiceController::class, 'create'])->middleware('auth');
 Route::post('/request-service', [RequestServiceController::class, 'store'])->middleware('auth');
+
+Route::middleware(['auth'])->group(function () {
+    // Existing routes...
+
+    // Service request routes
+    Route::get('/service-requests/{id}/acknowledgment', [RequestServiceController::class, 'acknowledgment'])
+        ->name('service-requests.acknowledgment');
+
+    // Add a regular web route for status updates
+    Route::get('/service-requests/{id}/check-status', [RequestServiceController::class, 'checkStatus'])
+        ->name('service-requests.check-status');
+
+    // Other routes...
+});
