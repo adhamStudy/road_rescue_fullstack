@@ -5,12 +5,12 @@
          style="background-image: url('/assets/images/hero.jpg')"></div>
     <div class="absolute inset-0 bg-gradient-to-br from-black/60 to-black/40"></div>
     
-    <!-- Glass Card Content -->
-    <div class="relative z-10 max-w-4xl mx-auto px-6 text-center">
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-8 md:p-12 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-2">
+    <!-- Compact Glass Card Content -->
+    <div class="relative z-10 max-w-3xl mx-auto px-6 text-center">
+      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-6 md:p-8 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-2">
         
         <!-- Main Title -->
-        <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight">
+        <h1 class="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-4 leading-tight">
           Smart RoadSide 
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
             Assistance
@@ -18,17 +18,17 @@
         </h1>
         
         <!-- Subtitle -->
-        <p class="text-lg md:text-xl lg:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto leading-relaxed font-medium">
+        <p class="text-base md:text-lg lg:text-xl text-gray-200 mb-6 max-w-2xl mx-auto leading-relaxed font-medium">
           On-the-spot Vehicle repairs through fully equipped mobile service Trucks
         </p>
         
         <!-- CTA Button -->
         <button 
           @click="requestHelp"
-          class="group relative inline-flex items-center px-8 py-4 text-lg font-bold text-white bg-gradient-to-r from-orange-500 to-red-600 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-orange-600 hover:to-red-700 focus:outline-none focus:ring-4 focus:ring-orange-300/50"
+          class="group relative inline-flex items-center px-6 py-3 text-base font-bold text-white bg-gradient-to-r from-orange-500 to-red-600 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-orange-600 hover:to-red-700 focus:outline-none focus:ring-4 focus:ring-orange-300/50"
         >
           <span class="relative z-10">Request Help Now</span>
-          <svg class="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform duration-300" 
+          <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" 
                fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
           </svg>
@@ -38,8 +38,8 @@
         </button>
         
         <!-- Decorative Elements -->
-        <div class="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-blue-400/30 to-purple-600/30 rounded-full blur-xl"></div>
-        <div class="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-br from-orange-400/30 to-red-600/30 rounded-full blur-xl"></div>
+        <div class="absolute -top-3 -right-3 w-16 h-16 bg-gradient-to-br from-blue-400/30 to-purple-600/30 rounded-full blur-xl"></div>
+        <div class="absolute -bottom-3 -left-3 w-12 h-12 bg-gradient-to-br from-orange-400/30 to-red-600/30 rounded-full blur-xl"></div>
       </div>
     </div>
     
@@ -57,8 +57,6 @@ const requestHelp = () => {
   // Handle the request help action
   router.visit('/request-service'); // Performs a GET request to the URL
   // You can add your logic here, like opening a modal or navigating to a contact form
-
-
 }
 </script>
 

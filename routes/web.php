@@ -19,7 +19,20 @@ Route::get('/services', function () {
 
     return Inertia::render('Services', ['services' => $services]);
 });
+Route::get('/guides', function () {
 
+    // $services = Service::all();
+    // dd($services);
+
+    return Inertia::render('Guides');
+});
+Route::get('/about', function () {
+
+    // $services = Service::all();
+    // dd($services);
+
+    return Inertia::render('About');
+});
 
 
 Route::get('/login', [AuthController::class, 'create'])->name('login');

@@ -57,7 +57,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .services-container {
   position: relative;
-  background: linear-gradient(135deg, #f0f0f0 0%, #8d8991 100%);
+  background: linear-gradient(135deg, #f0f0f0 0%, #e5e1e9 100%);
   min-height: 100vh;
   overflow: hidden;
 }

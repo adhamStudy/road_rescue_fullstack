@@ -21,7 +21,7 @@
           </a>
         </li>
         <li class="nav-item group">
-          <a href="/how-it-works" class="nav-link ">
+          <a href="/guides" class="nav-link ">
             Guides
             <span class="nav-underline"></span>
           </a>
