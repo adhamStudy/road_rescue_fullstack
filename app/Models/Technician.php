@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class Technician extends Authenticatable
+class Technician extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
 
@@ -46,8 +48,8 @@ class Technician extends Authenticatable
         return $this->hasMany(Bill::class);
     }
 
-    // Filament authentication
-    public function canAccessPanel(\Filament\Panel $panel): bool
+    // Filament authentication - required by FilamentUser interface
+    public function canAccessPanel(Panel $panel): bool
     {
         return $panel->getId() === 'technician' && $this->status === 'active';
     }
