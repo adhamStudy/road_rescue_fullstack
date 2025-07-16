@@ -18,11 +18,13 @@
 
     <!-- Main content injected here -->
     <slot></slot>
+    <Footer/>
   </div>
 </template>
 
 <script setup>
 import Header from '../Components/Header.vue'
+import Footer from '../Components/Footer.vue'
 
 import { ref, computed, onMounted } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";

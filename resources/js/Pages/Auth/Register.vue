@@ -39,6 +39,7 @@
                 <div v-if="form.errors.name" class="text-red-500 font-bold">
                     {{ form.errors.name }}
                   </div>
+
                 <!-- Email Field -->
                 <div>
                   <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
@@ -56,6 +57,33 @@
                 </div>
                 <div v-if="form.errors.email" class="text-red-500 font-bold">
                     {{ form.errors.email }}
+                  </div>
+
+                <!-- Phone Field -->
+                <div>
+                  <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number
+                  </label>
+                  <div class="relative">
+                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">
+                      <span class="text-gray-500 font-medium">🇸🇦 +966</span>
+                    </div>
+                    <input 
+                      type="tel" 
+                      id="phone" 
+                      name="phone" 
+                      v-model="form.phone"
+                      @input="formatPhoneNumber"
+                      required
+                      maxlength="9"
+                      class="w-full pl-20 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 outline-none"
+                      placeholder="5X XXX XXXX"
+                    />
+                  </div>
+                  <p class="text-xs text-gray-500 mt-1">Enter your Saudi phone number without +966</p>
+                </div>
+                <div v-if="form.errors.phone" class="text-red-500 font-bold">
+                    {{ form.errors.phone }}
                   </div>
 
                 <!-- Password Field -->
@@ -79,17 +107,17 @@
 
                 <!-- Password Confirmation -->
                 <div>
-                  <label for="password confirm" class="block text-sm font-medium text-gray-700 mb-2">
+                  <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">
                     Password confirmation
                   </label>
                   <input 
                     type="password" 
-                    id="password confirm" 
+                    id="password_confirmation" 
                     name="password_confirmation" 
                      v-model="form.password_confirmation"
                     required
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 outline-none"
-                    placeholder="Enter your password"
+                    placeholder="Confirm your password"
                   />
                 </div>
                 <div v-if="form.errors.password_confirmation" class="text-red-500 font-bold">
@@ -182,18 +210,6 @@
               @error="handleImageError"
               @load="handleImageLoad"
             />
-            
-            <!-- Overlay Content -->
-            <!-- <div class="absolute inset-0 flex items-center justify-center p-8">
-              <div class="text-center text-white">
-                <h2 class="text-2xl lg:text-3xl font-bold mb-4 drop-shadow-lg">
-                  Join Our Community
-                </h2>
-                <p class="text-lg opacity-90 drop-shadow-md max-w-md">
-                  Discover amazing features and connect with thousands of users worldwide
-                </p>
-              </div>
-              </div> -->
           </div>
 
         </div>
@@ -203,20 +219,33 @@
 </template>
 
 <script setup>
-
-
 import { router, useForm, Link, usePage } from '@inertiajs/vue3'
 
-
 const form = useForm({
-  name:null,
-  email:null,
-  password:null,
-  password_confirmation:null
+  name: null,
+  email: null,
+  phone: null,
+  password: null,
+  password_confirmation: null
 })
 
 const register = () => form.post('/register');
 
+// Format phone number input - only allow numbers and limit to 9 digits
+const formatPhoneNumber = (event) => {
+  let value = event.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+  
+  // Limit to 9 digits
+  if (value.length > 9) {
+    value = value.slice(0, 9);
+  }
+  
+  // Update the form value
+  form.phone = value;
+  
+  // Update the input display value
+  event.target.value = value;
+}
 
 import HomeLayout from '../../Layouts/HomeLayout.vue'
 

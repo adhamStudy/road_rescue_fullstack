@@ -13,10 +13,22 @@ return new class extends Migration
     {
         Schema::create('technicians', function (Blueprint $table) {
             $table->id();
+
+            // Basic Information
             $table->string('name');
-            $table->string('phone')->nullable();
+            $table->string('phone')->unique();
+            $table->string('email')->unique();
+            $table->string('password');
+
+            // Location & Status
+            $table->double('current_lat')->nullable();
+            $table->double('current_lng')->nullable();
             $table->boolean('is_available')->default(true);
-            $table->float('rating')->nullable(); // optional technician rating
+            $table->enum('status', ['active', 'inactive'])->default('active');
+
+            // Simple Rating
+            $table->decimal('rating', 3, 2)->default(0.00); // e.g. 4.85 out of 5
+
             $table->timestamps();
         });
     }
