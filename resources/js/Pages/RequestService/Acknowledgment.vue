@@ -78,7 +78,7 @@ const checkStatusUrl = `/service-requests/${props.serviceRequest.id}/check-statu
 // Status labels for better display
 const statusLabels = {
   'pending': 'Pending',
-  'accepted': 'Technician Assigned',
+  'assigned': 'Technician Assigned',
   'in_progress': 'Technician En Route',
   'completed': 'Completed',
   'cancelled': 'Cancelled'

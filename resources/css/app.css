@@ -1,12 +1,12 @@
 
 
 
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap'); */
 
 /* Set the global font */
-body {
+/* body {
   font-family: 'Ubuntu', sans-serif;
-}
+} */
 @import "tailwindcss";
 
 /* Desktop Navigation Styles */
