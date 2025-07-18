@@ -108,10 +108,10 @@ class ServiceRequestResource extends Resource
                     ->relationship('service', 'name'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()
-                    ->label('Update Status')
-                    ->visible(fn($record) => $record->status !== 'completed'),
+                // Tables\Actions\ViewAction::make(),
+                // Tables\Actions\EditAction::make()
+                //     ->label('Update Status')
+                //     ->visible(fn($record) => $record->status !== 'completed'),
 
                 Tables\Actions\Action::make('assign_to_me')
                     ->label('Assign to Me')

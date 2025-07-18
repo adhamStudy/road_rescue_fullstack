@@ -11,7 +11,7 @@
     <!-- Services section - Always visible -->
     <Transition name="fade-slide">
       <div class="flex items-center justify-center px-4 relative z-10">
-        <div class="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full max-w-8xl py-8 sm:py-12">
+        <div class="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full max-w-8xl py-2 sm:py-12">
           <div 
             v-for="(service, index) in services" 
             :key="service.id" 
