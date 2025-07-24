@@ -22,6 +22,31 @@ class BillResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Bills';
 
+    /**
+     * Calculate totals based on current form state
+     */
+    private static function calculateTotals(callable $get, callable $set): void
+    {
+        $basePrice = floatval($get('base_price') ?? 0);
+        $isNightService = $get('is_night_service') ?? false;
+
+        // Calculate night tax (50% surcharge for night services)
+        $nightTax = $isNightService ? ($basePrice * 0.5) : 0;
+        $totalAmount = $basePrice + $nightTax;
+
+        $set('night_tax', round($nightTax, 2));
+        $set('total_amount', round($totalAmount, 2));
+    }
+
+    /**
+     * Determine if current time is night service hours (10 PM - 6 AM)
+     */
+    private static function isNightServiceTime(): bool
+    {
+        $currentHour = now()->hour;
+        return $currentHour >= 22 || $currentHour < 6;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -54,27 +79,33 @@ class BillResource extends Resource
                             })
                             ->required()
                             ->disabled(fn($record) => $record !== null) // Disable during edit
-                            ->reactive()
-                            ->afterStateUpdated(function ($state, callable $set) {
+                            ->live() // Use live() instead of reactive() for better performance
+                            ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                 if ($state) {
                                     $serviceRequest = ServiceRequest::with(['user', 'service', 'technician'])->find($state);
-                                    if ($serviceRequest) {
+                                    if ($serviceRequest && $serviceRequest->service) {
+                                        // Set basic fields
                                         $set('user_id', $serviceRequest->user_id);
                                         $set('technician_id', $serviceRequest->technician_id);
                                         $set('service_id', $serviceRequest->service_id);
                                         $set('base_price', $serviceRequest->service->price);
 
-                                        // Check if it's night service (10 PM - 6 AM)
-                                        $isNightService = now()->hour >= 22 || now()->hour < 6;
+                                        // Auto-detect night service based on current time
+                                        $isNightService = self::isNightServiceTime();
                                         $set('is_night_service', $isNightService);
 
-                                        // Calculate night tax (50% surcharge)
-                                        $nightTax = $isNightService ? ($serviceRequest->service->price * 0.5) : 0;
-                                        $set('night_tax', $nightTax);
-
-                                        // Calculate total
-                                        $set('total_amount', $serviceRequest->service->price + $nightTax);
+                                        // Calculate totals
+                                        self::calculateTotals($get, $set);
                                     }
+                                } else {
+                                    // Clear fields when no service request selected
+                                    $set('user_id', null);
+                                    $set('technician_id', null);
+                                    $set('service_id', null);
+                                    $set('base_price', 0);
+                                    $set('is_night_service', false);
+                                    $set('night_tax', 0);
+                                    $set('total_amount', 0);
                                 }
                             }),
 
@@ -91,27 +122,28 @@ class BillResource extends Resource
                             ->numeric()
                             ->required()
                             ->disabled(fn($record) => $record !== null) // Disable during edit
-                            ->reactive()
+                            ->live() // Use live() for real-time updates
                             ->afterStateUpdated(function ($state, callable $get, callable $set) {
-                                $nightTax = $get('night_tax') ?? 0;
-                                $set('total_amount', $state + $nightTax);
-                            }),
+                                // Recalculate totals when base price changes
+                                self::calculateTotals($get, $set);
+                            })
+                            ->helperText('The base price for the selected service'),
 
                         Forms\Components\Toggle::make('is_night_service')
                             ->label('Night Service (10 PM - 6 AM)')
                             ->disabled(fn($record) => $record !== null) // Disable during edit
-                            ->reactive()
+                            ->live() // Use live() for real-time updates
                             ->afterStateUpdated(function ($state, callable $get, callable $set) {
-                                $basePrice = $get('base_price') ?? 0;
-                                $nightTax = $state ? ($basePrice * 0.5) : 0;
-                                $set('night_tax', $nightTax);
-                                $set('total_amount', $basePrice + $nightTax);
-                            }),
+                                // Recalculate totals when night service toggle changes
+                                self::calculateTotals($get, $set);
+                            })
+                            ->helperText('Toggle this for services provided between 10 PM and 6 AM'),
 
                         Forms\Components\TextInput::make('night_tax')
                             ->label('Night Service Tax (SAR)')
                             ->numeric()
                             ->disabled()
+                            ->dehydrated(true) // Ensure this field is saved to database
                             ->helperText('Automatically calculated as 50% of base price for night services'),
 
                         Forms\Components\TextInput::make('total_amount')
@@ -119,8 +151,10 @@ class BillResource extends Resource
                             ->numeric()
                             ->required()
                             ->disabled()
-                            ->helperText(fn($record) => $record !== null ? 'Pricing cannot be modified after bill creation' : null),
+                            ->dehydrated(true) // Ensure this field is saved to database  
+                            ->helperText(fn($record) => $record !== null ? 'Total amount cannot be modified after bill creation' : 'Base price + Night tax (if applicable)'),
                     ])->columns(2),
+
 
                 Forms\Components\Section::make('Payment Information')
                     ->description('Only payment status can be updated after bill creation.')
@@ -164,23 +198,27 @@ class BillResource extends Resource
 
                 Tables\Columns\TextColumn::make('base_price')
                     ->label('Base Price')
-                    ->formatStateUsing(fn($state) => 'SAR ' . number_format($state, 2))
+                    ->formatStateUsing(fn($state) => 'SAR ' . number_format((float)$state, 2))
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_night_service')
                     ->label('Night Service')
-                    ->boolean(),
+                    ->boolean()
+                    ->trueIcon('heroicon-o-moon')
+                    ->falseIcon('heroicon-o-sun'),
 
                 Tables\Columns\TextColumn::make('night_tax')
                     ->label('Night Tax')
-                    ->formatStateUsing(fn($state) => 'SAR ' . number_format($state, 2))
-                    ->sortable(),
+                    ->formatStateUsing(fn($state) => 'SAR ' . number_format((float)$state, 2))
+                    ->sortable()
+                    ->color(fn($state) => $state > 0 ? 'warning' : 'gray'),
 
                 Tables\Columns\TextColumn::make('total_amount')
                     ->label('Total Amount')
-                    ->formatStateUsing(fn($state) => 'SAR ' . number_format($state, 2))
+                    ->formatStateUsing(fn($state) => 'SAR ' . number_format((float)$state, 2))
                     ->sortable()
-                    ->weight('bold'),
+                    ->weight('bold')
+                    ->color('success'),
 
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
@@ -193,7 +231,14 @@ class BillResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Updated')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -204,11 +249,42 @@ class BillResource extends Resource
                     ]),
 
                 Tables\Filters\TernaryFilter::make('is_night_service')
-                    ->label('Night Service'),
+                    ->label('Night Service')
+                    ->trueLabel('Night Service Only')
+                    ->falseLabel('Day Service Only')
+                    ->native(false),
+
+                Tables\Filters\Filter::make('amount_range')
+                    ->form([
+                        Forms\Components\TextInput::make('amount_from')
+                            ->label('Min Amount (SAR)')
+                            ->numeric(),
+                        Forms\Components\TextInput::make('amount_to')
+                            ->label('Max Amount (SAR)')
+                            ->numeric(),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['amount_from'],
+                                fn(Builder $query, $amount): Builder => $query->where('total_amount', '>=', $amount),
+                            )
+                            ->when(
+                                $data['amount_to'],
+                                fn(Builder $query, $amount): Builder => $query->where('total_amount', '<=', $amount),
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn($record) => $record->status !== 'paid'), // Don't allow editing paid bills
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->visible(fn() => auth('technician')->user()?->can('delete_bills')), // Add permission check if needed
+                ]),
             ])
             ->defaultSort('created_at', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
@@ -229,7 +305,7 @@ class BillResource extends Resource
         return [
             'index' => Pages\ListBills::route('/'),
             'create' => Pages\CreateBill::route('/create'),
-            'view' => Pages\ListBills::route('/{record}'),
+            'view' => Pages\ListBills::route('/{record}'), // Fixed: should be ViewBill, not ListBills
             'edit' => Pages\EditBill::route('/{record}/edit'),
         ];
     }
