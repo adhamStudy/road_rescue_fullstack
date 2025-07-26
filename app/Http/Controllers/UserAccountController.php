@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
@@ -26,7 +27,7 @@ class UserAccountController extends Controller
             'phone' => [
                 'required',
                 'string',
-                'regex:/^5[0-9]{8}$/', // Saudi mobile numbers start with 5 and are 9 digits total
+                'regex:/^5[0-9]{8}$/',
                 'unique:users,phone'
             ],
             'password' => 'required|string|min:8|confirmed'
@@ -38,18 +39,20 @@ class UserAccountController extends Controller
             'password.min' => 'Password must be at least 8 characters long.'
         ]);
 
-        // Store the phone number with +966 prefix
         $fullPhoneNumber = '+966' . $validated['phone'];
 
-        $user = User::create([
+        // Use DB::table instead of User::create to avoid the enum issue
+        $userId = DB::table('users')->insertGetId([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $fullPhoneNumber,
             'password' => Hash::make($validated['password']),
-            'role' => 'client'
-
+            'role' => 'client', // This will be properly quoted
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
+        $user = User::find($userId);
         Auth::login($user);
 
         return redirect()->intended('/');
