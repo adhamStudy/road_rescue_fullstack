@@ -884,7 +884,7 @@ button:focus {
 }
 
 /* Mobile optimizations */
-@media (max-width: 640px) {
+@media (max-width: 640px) {a
   .text-5xl {
     font-size: 2.5rem;
   }
