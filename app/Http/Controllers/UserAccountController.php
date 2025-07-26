@@ -46,6 +46,8 @@ class UserAccountController extends Controller
             'email' => $validated['email'],
             'phone' => $fullPhoneNumber,
             'password' => Hash::make($validated['password']),
+            'role' => 'client'
+
         ]);
 
         Auth::login($user);
